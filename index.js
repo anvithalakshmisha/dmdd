@@ -24,7 +24,7 @@ async function setDatabaseConnection() {
       },
       {
         $group: {
-          _id: null,
+          _id: "$ProductID",
           totalSoldQuantity: {
             $sum: "$TotalOrderQuantity",
           },
