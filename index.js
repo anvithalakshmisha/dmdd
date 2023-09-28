@@ -1,6 +1,6 @@
 const { MongoClient } = require("mongodb");
 
-// MongoDB Atlas connection string. Replace with your own connection string.
+// connection string.
 const uri = "mongodb://localhost:27017";
 
 // Create a new MongoClient
@@ -12,39 +12,35 @@ async function connectToDatabase() {
     // Connect to the MongoDB cluster
     await client.connect();
 
-    // Access a specific database
+    // Access DMDD database and lab1 cluster
     const database = client.db("DMDD");
     const collection = database.collection("lab1");
 
-    console.log("Connected to the database");
-
-    // You can perform database operations here
-
-    const pipeline = [
+    const findTotalOrderSold = [
       {
         $match: {
-          ProductID: 868, // Match documents with ProductID 868
+          ProductID: 868,
         },
       },
       {
         $group: {
           _id: null,
           totalSoldQuantity: {
-            $sum: "$TotalOrderQuantity", // Calculate the sum of TotalOrderQuantity
+            $sum: "$TotalOrderQuantity",
           },
         },
       },
     ];
 
-    const result = await collection.aggregate(pipeline).toArray();
+    const result = await collection.aggregate(findTotalOrderSold).toArray();
 
     if (result.length > 0) {
       console.log(
-        "Total sold quantity for Product 868:",
+        "Total sold quantity for ProductID 868 is",
         result[0].totalSoldQuantity
       );
     } else {
-      console.log("Product 868 not found in orders.");
+      console.log("ProductID 868 has 0 sold quantity");
     }
   } catch (error) {
     console.error("Error connecting to the database:", error);
