@@ -1,13 +1,13 @@
 const { MongoClient } = require("mongodb");
 
-// connection string.
+// connection string
 const uri = "mongodb://localhost:27017";
 
-// Create a new MongoClient
+// new MongoClient
 const client = new MongoClient(uri);
 
 // Function to connect to the database
-async function connectToDatabase() {
+async function setDatabaseConnection() {
   try {
     // Connect to the MongoDB cluster
     await client.connect();
@@ -32,23 +32,22 @@ async function connectToDatabase() {
       },
     ];
 
-    const result = await collection.aggregate(findTotalOrderSold).toArray();
+    const totalSold = await collection.aggregate(findTotalOrderSold).toArray();
 
-    if (result.length > 0) {
+    if (totalSold.length > 0) {
       console.log(
         "Total sold quantity for ProductID 868 is",
-        result[0].totalSoldQuantity
+        totalSold[0].totalSoldQuantity
       );
     } else {
       console.log("ProductID 868 has 0 sold quantity");
     }
   } catch (error) {
-    console.error("Error connecting to the database:", error);
+    console.error("Error connecting to the database", error);
   } finally {
     // Close the client connection when done
     await client.close();
   }
 }
 
-// Call the connectToDatabase function to establish a connection
-connectToDatabase();
+setDatabaseConnection();
